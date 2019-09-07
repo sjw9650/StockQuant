@@ -1,145 +1,110 @@
 import time
-import win32com.client
 import pandas as pd
 from pandas import DataFrame
+import CreonApi
 import copy
 
-class StockProgram:
+class Stock(object) :
+
+
+    def __init__(self, stockCode, price, stockName, maketCap, dividendRate, debt,roa, bps, operatingIncome, sps, cps):
+        self.stockCode = stockCode;
+        self.price = price;
+        self.stockName = stockName;
+        self.dividendRate =dividendRate;
+        self.operatingIncome = operatingIncome * 4 * 0.95; # 전분기 영업이익 *4 * 0.95
+        self.debt = debt;
+
+        if operatingIncome != 0:
+            self.per = maketCap / operatingIncome;
+        else :
+            self.per = 0.0;
+
+        if sps != 0:
+            self.psr = price / sps;
+        else :
+            self.psr = 0.0;
+
+        if cps != 0 :
+            self.pcr = price / cps;
+        else :
+            self.pcr = 0.0;
+        if bps != 0 :
+            self.pbr = price / bps;
+        else :
+            self.pbr = 0.0;
+
+        self.roa = roa;
+        self.psrRank = 0;
+        self.pbrRank = 0;
+        self.perRank = 0;
+        self.pcrRank = 0;
+        self.totalRank = 0;
+    def setPsrRank(self,rank):
+        self.psrRank = rank;
+    def setPbrRank(self,rank):
+        self.pbrRank = rank;
+    def setPerRank(self,rank):
+        self.perRank = rank;
+    def setPcrRank(self,rank):
+        self.pcrRank = rank;
+    def setTotalRank(self,rank):
+        self.totalRank = self.totalRank + rank;
+
+
+class FirstStrategy(object):
+    creon = CreonApi.Creon();
+    codeinformList = [0, 4, 17, 20, 73, 75, 77, 80, 89, 91, 95, 102, 107, 111, 123, 124]
+    stockList = [];
+
+    # 0 종목코드, 4 현재가, 17 종목명, 20 : 총 상장주식수, 73 배당률, 75 부채비율, 77 ROA, 80 순이익증가율
+    # 89 BPS, 91 영업이익 95 결산연월, 102 분기영업이익,107 분기 ROE, 111 결산연월  123 SPS 124 CFPS
+
     def __init__(self):
-        self.creonApi = creonApi;
+        print("init FirstStarategy")
 
+    def printStockList(self, index):
+        print(self.stockList[index])
 
-    def refindeStockFirstStrategy(self, inputdata):
+    def refinedStock(self, inputdata):
         data = []
-        len2 = len(inputdata)
-        for index in range(len2):
+        lenofdata = len(inputdata)
+        for index in range(lenofdata):
             tempdata = copy.deepcopy(inputdata[index])
-            advantage = tempdata[12]
-            advantage2 = tempdata[14]
-            if advantage2 > 0 :
-                per = tempdata[1]*tempdata[4] / (4 * advantage2)
-                if advantage > 0 :
-                    per2 = tempdata[1]*tempdata[4] / advantage
+            tempStock = Stock(tempdata[0],tempdata[1],tempdata[2],tempdata[3],tempdata[4],tempdata[5],tempdata[6],tempdata[8],tempdata[11],tempdata[14],tempdata[15]);
+            if (tempStock.per < 10) and (tempStock.debt < 50)  and (tempStock.pbr > 0.2) and(tempStock.roa > 4) :
+                self.stockList.append(tempStock);
 
-                    tempdata.append(per) ##19
-                    debt = tempdata[7]
-                    tempdata.append(debt)  ##20
-                    if tempdata[11] > 0 :
-                        pbr = tempdata[1] / tempdata[11]
-                        tempdata.append(pbr)##21
-                        roa = tempdata[9]
-                        tempdata.append(roa)##22
-                        sps = tempdata[19]
-                        if sps > 0 :
-                            psr = tempdata[1] /sps
-                            tempdata.append(psr) ##23
-                            cfps = tempdata[20]
-                            if cfps > 0 :
-                                pcr=tempdata[1] / cfps
-                                tempdata.append(pcr)  ##24
-                                if (per < 10) and (debt < 50)  and (pbr > 0.2) and(roa > 5) and(tempdata[10] > 0) :
-                                    tempdata.append(0) #25
-                                    tempdata.append(0) #26
-                                    tempdata.append(0) #27
-                                    tempdata.append(0) #28
-                                    tempdata.append(0) #29
-                                    data.append(tempdata)
-        countData = len(data)
-        data.sort(key=lambda x: x[21])
+    def sortList(self):
+        countData = len(self.stockList)
+        self.stockList.sort(key=lambda x: x.psr)
+        for index in range(countData):
+            self.stockList[index].setPsrRank(index)
+            self.stockList[index].setTotalRank(index)
+
+        self.stockList.sort(key=lambda x: x.pbr)
+        for index in range(countData):
+            self.stockList[index].setPbrRank(index)
+            self.stockList[index].setTotalRank(index)
+
+        self.stockList.sort(key=lambda x: x.per)
         for index in range(countData) :
-            data[index][27] = index
-            data[index][31] += index
-        data.sort(key=lambda x: x[23])
+            self.stockList[index].setPerRank(index)
+            self.stockList[index].setTotalRank(index)
+
+        self.stockList.sort(key=lambda x: x.pcr)
         for index in range(countData) :
-            data[index][28] = index
-            data[index][31] += index
-        data.sort(key=lambda x: x[25])
-        for index in range(countData) :
-            data[index][29] = index
-            data[index][31] += index
-        data.sort(key=lambda x: x[26])
-        for index in range(countData) :
-            data[index][30] = index
-            data[index][31] += index
+            self.stockList[index].setPcrRank(index)
+            self.stockList[index].setTotalRank(index)
 
-        data.sort(key=lambda x: x[31])
-        return data
-
-    def readCsvFile(self):
-        csv_data = pd.read_csv('PrecodeList.csv', index_col=0)
-        length = len(csv_data)
-        for indx in range(length):
-            self.codeListLast[indx] = csv_data['종목코드'][indx]
-
-    def modifyArray(self,inputData):
-        length = len(inputData)
-        mylist = [0 for i in range(length)]
-
-        for indx in range(length):
-            mylist[indx] = inputData[indx][0]
-        self.codeListLast = mylist
-
-    def momenterm(self,m_InfoList):
-
-        numCodeRow = len(self.codeListLast)
-        print(numCodeRow)
-        obj = win32com.client.Dispatch("cpsysdib.MarketEye")
-        data = []
-        obj.SetInputValue(0, m_InfoList)
-        obj.SetInputValue(1, self.codeListLast)
-        obj.BlockRequest()
-        numField = obj.GetHeaderValue(0)
-        numData = obj.GetHeaderValue(2)
-
-        for idx_x in range(numData):
-            tempdata = []
-            for idx_y in range(numField):
-                tempdata.append(obj.GetDataValue(idx_y, idx_x))
-            if tempdata[4] > 0 :
-                num5 = (tempdata[1] - tempdata[4]) / tempdata[4] * 100
-            else :
-                num5 = 0
-            if tempdata[5] > 0:
-                num10 = (tempdata[1] - tempdata[5]) / tempdata[5] * 100
-            else:
-                num10 = 0
-
-            if tempdata[6] > 0:
-                num20 = (tempdata[1] - tempdata[6]) / tempdata[6] * 100
-            else:
-                num20 = 0
-
-            if tempdata[7] > 0:
-                num60= (tempdata[1] - tempdata[7]) / tempdata[7] * 100
-            else:
-                num60 = 0
-
-            tempdata.append(num5)
-            tempdata.append(num10)
-            tempdata.append(num20)
-            tempdata.append(num60)
-            data.append(tempdata)
-
-        return data
-
+        self.stockList.sort(key=lambda x: x.totalRank)
 
 if __name__ == "__main__":
-    creon = Creon()
-    if creon.creonConnectCheck() == 0 :
-        exit()
-
-    creon.getALLStockCode()
-    m_InfoList =[0,4, 5, 17, 20, 67, 74, 75, 76,77, 80,89, 91, 95, 102, 107, 109, 110,111,123,124]
-    creon.dataSlice()
-
-    ### 자료가져오기
-    data=creon.subMarketEye(m_InfoList)
-    result = creon.refindeStock(data)
-
-    df=DataFrame(result,  columns=['종목코드','현재가', '시가', '종목명', '총상장주식수', 'PER', '배당률', '부채비율', '유보율','ROA','순이익증가율','BPS','영업이익', '결산년월', '분기영업이익', '분기ROE', '분기유보율', '분기부채비율','최근분기년월','SPS','CFPS','per','debt','pbr','roa','psr','pcr','per_rank','pbr_rank','psr_rank','pcr_rank','sum_rank'])
-    df.to_csv('codeList.csv')
-    m_InfoList2 = [0,4,5,17,158,159,160,161]
-    creon.modifyArray(result)
-    result2 = creon.momenterm(m_InfoList2)
-    df2 = DataFrame(result2,columns=['종목코드', '현재가', '시가', '종목명','5일 전 종가','10일 전 종가','20일 전 종가','60일 전 종가','5일 전 종가 Ratio','10일 전 종가 대비','20일 전 종가 대비' ,'60일 전 종가 대비'])
-    df2.to_csv('codeListMomenterm.csv')
+    quant = FirstStrategy();
+    if quant.creon.creonConnectCheck() == True :
+        tempdata = quant.creon.setAllStockList();
+        sliceData = quant.creon.dataSlice(tempdata);
+        quant.refinedStock(quant.creon.subMarketEye(sliceData, quant.codeinformList));
+        quant.sortList();
+    else:
+        print("bye!")
