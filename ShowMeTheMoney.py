@@ -5,6 +5,17 @@ import CreonApi
 import copy
 import StockProgram
 
-compareDiff = StockProgram.CompareDiff()
 
-compareDiff.ComparePrice()
+def CompareDay():
+
+    compareDiff = StockProgram.CompareDiff()
+
+    compareDiff.ComparePrice()
+
+def FirstStrategy():
+    fistStrategy = StockProgram.FirstStrategy();
+    fistStrategy.fistStrategy()
+
+
+FirstStrategy()
+CompareDay()
