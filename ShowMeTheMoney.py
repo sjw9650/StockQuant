@@ -5,6 +5,6 @@ import CreonApi
 import copy
 import StockProgram
 
-compareDiff StockProgram.CompareDiff();
+compareDiff = StockProgram.CompareDiff()
 
-CompareDiff.readCsvFile();
+compareDiff.readCsvFile()
