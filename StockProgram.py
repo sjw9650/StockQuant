@@ -101,6 +101,7 @@ class CompareDiff(object):
 
             lengthValue= len(tempList)
             result = []
+            sumRate = 0
             for indx in range(lengthValue):
                 temp = []
                 temp.append(self.diffList[indx][0])
@@ -108,11 +109,13 @@ class CompareDiff(object):
                 diffValue = tempList[indx] - self.diffList[indx][2]
                 temp.append(diffValue)
                 temp.append(diffValue/self.diffList[indx][2] * 100)
+                sumRate += (diffValue/self.diffList[indx][2] * 100)
                 temp.append(tempList[indx])
                 temp.append(self.diffList[indx][2])
                 result.append(temp)
             df = DataFrame(result,columns=['종목코드', '종목명', '등락금액', '등락률', '현재가', '과거가격'])
             df.to_csv('diff.csv')
+            print(sumRate)
 
         else:
             print("bye!")
