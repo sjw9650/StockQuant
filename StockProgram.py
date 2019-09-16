@@ -83,7 +83,7 @@ class CompareDiff(object):
 
     def readCsvFile(self):
         csv_data = pd.read_csv('PrecodeList.csv', index_col = 0)
-
+        length = len(csv_data)
         for indx in range(length):
             tempList = []
             tempList.append(csv_data['종목코드'][indx])
@@ -96,23 +96,24 @@ class CompareDiff(object):
 
     def ComparePrice(self):
         if self.creon.creonConnectCheck() == True :
+            self.readCsvFile()
             tempList = self.creon.subMarketSingArray(self.stockList, self.codeinformList)
-            length = len(tempList)
+
+            lengthValue= len(tempList)
             result = []
-            for indx range(length):
+            for indx in range(lengthValue):
                 temp = []
-                temp.append(self.diffList[0][indx])
-                temp.append(self.diffList[1][indx])
-                diffValue = tempList[indx] - self.diffList[2][indx]
+                temp.append(self.diffList[indx][0])
+                temp.append(self.diffList[indx][1])
+                diffValue = tempList[indx] - self.diffList[indx][2]
                 temp.append(diffValue)
-                temp.append(diffValue/self.diffList[2][indx] * 100)
+                temp.append(diffValue/self.diffList[indx][2] * 100)
                 temp.append(tempList[indx])
-                temp.appand(self.diffList[2][indx])
-                reult.append(temp)
-            df = DataFrame(reult.diffList,columns=['종목코드', '종목명', '등락금액', '등락률', '현재가', '과거가격'])
+                temp.append(self.diffList[indx][2])
+                result.append(temp)
+            df = DataFrame(result,columns=['종목코드', '종목명', '등락금액', '등락률', '현재가', '과거가격'])
             df.to_csv('diff.csv')
 
-            print
         else:
             print("bye!")
 
