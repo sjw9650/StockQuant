@@ -101,6 +101,7 @@ class CompareDiff(object):
 
             lengthValue= len(tempList)
             result = []
+            sumRate = 0
             for indx in range(lengthValue):
                 temp = []
                 temp.append(self.diffList[indx][0])
@@ -108,11 +109,13 @@ class CompareDiff(object):
                 diffValue = tempList[indx] - self.diffList[indx][2]
                 temp.append(diffValue)
                 temp.append(diffValue/self.diffList[indx][2] * 100)
+                sumRate += (diffValue/self.diffList[indx][2] * 100)
                 temp.append(tempList[indx])
                 temp.append(self.diffList[indx][2])
                 result.append(temp)
             df = DataFrame(result,columns=['종목코드', '종목명', '등락금액', '등락률', '현재가', '과거가격'])
-            df.to_csv('diff.csv')
+            df.to_csv('CompareOldData.csv')
+            print(sumRate)
 
         else:
             print("bye!")
@@ -137,7 +140,7 @@ class FirstStrategy(object):
         for index in range(lenofdata):
             result.append(self.stockList[index].printStock())
         df = DataFrame(result,columns=['종목코드', '현재가', '종목명', '배당률', '영업이익','부채비율','ROA','per','psr','pcr','pbr','perRanK','psrRanK','pcrRanK','pbrRanK','totalRank'])
-        df.to_csv('codeList2.csv')
+        df.to_csv('firstStrategy.csv')
 
     def refinedStock(self, inputdata):
         data = []
@@ -172,13 +175,12 @@ class FirstStrategy(object):
 
         self.stockList.sort(key=lambda x: x.totalRank)
 
-if __name__ == "__main__":
-    quant = FirstStrategy()
-    if quant.creon.creonConnectCheck() == True :
-        tempdata = quant.creon.setAllStockList()
-        sliceData = quant.creon.dataSlice(tempdata)
-        quant.refinedStock(quant.creon.subMarketEye(sliceData, quant.codeinformList))
-        quant.sortList()
-        quant.saveDataStockList()
-    else:
-        print("bye!")
+    def fistStrategy(self):
+        if self.creon.creonConnectCheck() == True:
+            tempdata = self.creon.setAllStockList()
+            sliceData = self.creon.dataSlice(tempdata)
+            self.refinedStock(self.creon.subMarketEye(sliceData, self.codeinformList))
+            self.sortList()
+            self.saveDataStockList()
+        else:
+            print("bye!")
