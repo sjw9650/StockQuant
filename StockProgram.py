@@ -73,9 +73,10 @@ class Stock(object) :
 
 class CompareDiff(object):
     creon = CreonApi.Creon()
-    codeinformList = [0, 4, 17]
+    codeinformList = [4]
     stockList = []
     diffList = []
+
 
     def __init__(self):
         print("CompareDiff Class Init")
@@ -90,13 +91,27 @@ class CompareDiff(object):
             tempList.append(csv_data['현재가'][indx])
             self.stockList.append( csv_data['종목코드'][indx])
             self.diffList.append(tempList)
-        df = DataFrame(self.diffList,columns=['종목코드', '종목명', '현재가'])
-        df.to_csv('test.csv')
+
         print (len(self.stockList))
 
     def ComparePrice(self):
         if self.creon.creonConnectCheck() == True :
-            quant.refinedStock(quant.creon.subMarketEye(self.stockList, self.codeinformList))
+            tempList = self.creon.subMarketSingArray(self.stockList, self.codeinformList)
+            length = len(tempList)
+            result = []
+            for indx range(length):
+                temp = []
+                temp.append(self.diffList[0][indx])
+                temp.append(self.diffList[1][indx])
+                diffValue = tempList[indx] - self.diffList[2][indx]
+                temp.append(diffValue)
+                temp.append(diffValue/self.diffList[2][indx] * 100)
+                temp.append(tempList[indx])
+                temp.appand(self.diffList[2][indx])
+                reult.append(temp)
+            df = DataFrame(reult.diffList,columns=['종목코드', '종목명', '등락금액', '등락률', '현재가', '과거가격'])
+            df.to_csv('diff.csv')
+
             print
         else:
             print("bye!")

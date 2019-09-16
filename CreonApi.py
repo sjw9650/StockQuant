@@ -46,6 +46,27 @@ class Creon:
             refinedStockList.append(tempList)
         return refinedStockList
 
+    def subMarketSingArray(self, codeList, mInfoList):
+        numCodeRow =len(codeList)
+        print(numCodeRow)
+        obj = win32com.client.Dispatch("cpsysdib.MarketEye")
+
+        obj.SetInputValue(0, mInfoList)
+        obj.SetInputValue(1, codeList[index])
+        obj.BlockRequest()
+        numField = obj.GetHeaderValue(0)
+        numData = obj.GetHeaderValue(2)
+        data=[]
+
+
+        for idx_x in range(numData):
+            tempdata=[]
+            for idx_y in range(numField):
+                tempdata.append(obj.GetDataValue(idx_y, idx_x))
+            data.append(tempdata)
+
+        return data
+
     def subMarketEye(self, codeList, mInfoList):
         numCodeRow =len(codeList)
         print(numCodeRow)

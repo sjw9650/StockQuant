@@ -7,4 +7,4 @@ import StockProgram
 
 compareDiff = StockProgram.CompareDiff()
 
-compareDiff.readCsvFile()
+compareDiff.ComparePrice()
