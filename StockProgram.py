@@ -81,16 +81,15 @@ class CompareDiff(object):
         print("CompareDiff Class Init")
 
     def readCsvFile(self):
-        csv_data = pd.read_csv('PrecodeList.csv', index_col=0)
-        length = len(csv_data)
-        print (length)
+        csv_data = pd.read_csv('PrecodeList.csv', index_col = 0)
+
         for indx in range(length):
             tempList = []
             tempList.append(csv_data['종목코드'][indx])
             tempList.append(csv_data['종목명'][indx])
             tempList.append(csv_data['현재가'][indx])
-            self.stockList[indx] = csv_data['종목코드'][indx]
-            slef.diffList.append(tempList)
+            self.stockList.append( csv_data['종목코드'][indx])
+            self.diffList.append(tempList)
         df = DataFrame(self.diffList,columns=['종목코드', '종목명', '현재가'])
         df.to_csv('test.csv')
         print (len(self.stockList))
