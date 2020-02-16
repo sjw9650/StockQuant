@@ -147,7 +147,7 @@ class FirstStrategy(object):
         for index in range(lenofdata):
             tempdata = copy.deepcopy(inputdata[index])
             tempStock = Stock(tempdata[0],tempdata[1],tempdata[2],tempdata[3],tempdata[4],tempdata[5],tempdata[6],tempdata[8],tempdata[9],tempdata[10],tempdata[15],tempdata[16])
-            if (tempStock.operatingIncome > 0 and tempStock.operatingIncomeIncrease > 0):
+            if (tempStock.operatingIncome > 0 and tempStock.operatingIncomeIncrease > 0 and tempStock.debt < 85 ):
                 self.stockList.append(tempStock)
 
     def sortList(self):
