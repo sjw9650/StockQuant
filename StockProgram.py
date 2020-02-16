@@ -78,6 +78,7 @@ class CompareDiff(object):
     diffList = []
 
 
+
     def __init__(self):
         print("CompareDiff Class Init")
 
