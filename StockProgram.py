@@ -6,7 +6,7 @@ import copy
 
 class Stock(object) :
 
-    def __init__(self, stockCode, price, stockName, maketCap, dividendRate, debt,roa, bps,operatingIncomeIncrease, operatingIncome, sps, cps):
+    def __init__(self, stockCode, price, stockName, maketCap, dividendRate, debt,roa, bps,operatingIncomeIncreasem,operatingIncomeIncrease, operatingIncome, sps, cps):
         self.stockCode = stockCode
         self.price = price
         self.stockName = stockName
@@ -147,7 +147,7 @@ class FirstStrategy(object):
         for index in range(lenofdata):
             tempdata = copy.deepcopy(inputdata[index])
             tempStock = Stock(tempdata[0],tempdata[1],tempdata[2],tempdata[3],tempdata[4],tempdata[5],tempdata[6],tempdata[8],tempdata[9],tempdata[12],tempdata[15],tempdata[16])
-            if (tempStok.operatingIncome > 0 and tempStok.operatingIncomeIncrease > 0):
+            if (tempStock.operatingIncome > 0 and tempStock.operatingIncomeIncrease > 0):
                 self.stockList.append(tempStock)
 
     def sortList(self):
