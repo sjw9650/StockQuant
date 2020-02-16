@@ -52,12 +52,11 @@ class Creon:
         obj = win32com.client.Dispatch("cpsysdib.MarketEye")
 
         obj.SetInputValue(0, mInfoList)
-        obj.SetInputValue(1, codeList)
+        obj.SetInputValue(1, codeList[index])
         obj.BlockRequest()
         numField = obj.GetHeaderValue(0)
         numData = obj.GetHeaderValue(2)
         data=[]
-
 
         for idx_x in range(numData):
             tempdata=[]

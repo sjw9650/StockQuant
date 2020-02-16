@@ -6,14 +6,14 @@ import copy
 
 class Stock(object) :
 
-    def __init__(self, stockCode, price, stockName, maketCap, dividendRate, debt,roa, bps, operatingIncome, sps, cps):
+    def __init__(self, stockCode, price, stockName, maketCap, dividendRate, debt,roa, bps,operatingIncomeIncrease, operatingIncome, sps, cps):
         self.stockCode = stockCode
         self.price = price
         self.stockName = stockName
         self.dividendRate =dividendRate
         self.operatingIncome = operatingIncome * 4 * 0.95 # 전분기 영업이익 *4 * 0.95
         self.debt = debt
-
+        self.operatingIncomeIncrease = operatingIncomeIncrease;
         if operatingIncome != 0:
             self.per = (maketCap * price) / operatingIncome
         else :
@@ -40,6 +40,7 @@ class Stock(object) :
         self.pcrRank = 0
         self.totalRank = 0
 
+
     def setPsrRank(self,rank):
         self.psrRank = rank
     def setPbrRank(self,rank):
@@ -57,6 +58,7 @@ class Stock(object) :
         result.append(self.price)
         result.append(self.stockName)
         result.append(self.dividendRate)
+        result.append(self.operatingIncomeIncrease)
         result.append(self.operatingIncome)
         result.append(self.debt)
         result.append(self.roa)
@@ -76,8 +78,6 @@ class CompareDiff(object):
     codeinformList = [4]
     stockList = []
     diffList = []
-
-
 
     def __init__(self):
         print("CompareDiff Class Init")
@@ -122,11 +122,9 @@ class CompareDiff(object):
             print("bye!")
 
 
-
-
 class FirstStrategy(object):
     creon = CreonApi.Creon()
-    codeinformList = [0, 4, 17, 20, 74, 75, 77, 80, 89, 91, 95, 102, 107, 111, 123, 124]
+    codeinformList = [0, 4, 17, 20, 74, 75, 77, 80, 89, 90,91, 95, 102, 107, 111, 123, 124]
     stockList = []
 
     # 0 종목코드, 4 현재가, 17 종목명, 20 : 총 상장주식수, 74 배당률, 75 부채비율, 77 ROA, 80 순이익증가율
@@ -140,7 +138,7 @@ class FirstStrategy(object):
         result = []
         for index in range(lenofdata):
             result.append(self.stockList[index].printStock())
-        df = DataFrame(result,columns=['종목코드', '현재가', '종목명', '배당률', '영업이익','부채비율','ROA','per','psr','pcr','pbr','perRanK','psrRanK','pcrRanK','pbrRanK','totalRank'])
+        df = DataFrame(result,columns=['종목코드', '현재가', '종목명', '배당률','영업이익증가율', '영업이익','부채비율','ROA','per','psr','pcr','pbr','perRanK','psrRanK','pcrRanK','pbrRanK','totalRank'])
         df.to_csv('firstStrategy.csv')
 
     def refinedStock(self, inputdata):
@@ -148,8 +146,8 @@ class FirstStrategy(object):
         lenofdata = len(inputdata)
         for index in range(lenofdata):
             tempdata = copy.deepcopy(inputdata[index])
-            tempStock = Stock(tempdata[0],tempdata[1],tempdata[2],tempdata[3],tempdata[4],tempdata[5],tempdata[6],tempdata[8],tempdata[11],tempdata[14],tempdata[15])
-            if (tempStock.per < 15) and (tempStock.per > 0) and (tempStock.debt < 50)  and (tempStock.pbr > 0.2) and(tempStock.roa > 4) :
+            tempStock = Stock(tempdata[0],tempdata[1],tempdata[2],tempdata[3],tempdata[4],tempdata[5],tempdata[6],tempdata[8],tempdata[9],tempdata[12],tempdata[15],tempdata[16])
+            if (tempStok.operatingIncome > 0 and tempStok.operatingIncomeIncrease > 0)
                 self.stockList.append(tempStock)
 
     def sortList(self):
