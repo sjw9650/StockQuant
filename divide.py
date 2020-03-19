@@ -25,7 +25,7 @@ class DividStock(object) :
         lenofdata = len(inputdata)
         for index in range(lenofdata):
             tempdata = copy.deepcopy(inputdata[index])
-            tempStock = Stock(tempdata[0],tempdata[1],tempdata[2],tempdata[3]):
+            tempStock = Stock(tempdata[0],tempdata[1],tempdata[2],tempdata[3])
             self.stockList.append(tempStock)
 
     def saveDataStockList(self):
@@ -50,3 +50,4 @@ def DivideStockList():
     divideStcok.dividStrategy()
 
 DivideStockList()
+
