@@ -183,3 +183,5 @@ class FirstStrategy(object):
             self.saveDataStockList()
         else:
             print("bye!")
+
+    
