@@ -12,7 +12,15 @@ class DividStock(object) :
         self.stockCode = stockCode
         self.price = price
         self.stockName = stockName
-        self.dividend =dividend
+        self.dividend =dividend;
+
+    def printStock(self):
+        result = []
+        result.append(self.stockCode)
+        result.append(self.price)
+        result.append(self.stockName)
+        result.append(self.dividend)
+        return result
 
 class DivideStrategy():
 
