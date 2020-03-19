@@ -33,7 +33,7 @@ class DividStock(object) :
         result = []
         for index in range(lenofdata):
             result.append(self.stockList[index].printStock())
-        df = DataFrame(result,columns=['종목코드', '현재가', '종목명', '배당금']
+        df = DataFrame(result,columns=['종목코드', '현재가', '종목명', '배당금'])
         df.to_csv('divideList.csv')
 
     def dividStrategy(self):
