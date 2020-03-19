@@ -11,10 +11,8 @@ def CompareDay():
     compareDiff.ComparePrice()
 
 def FirstStrategy():
-    fistStrategy = StockProgram.FirstStrategy();
+    fistStrategy = StockProgram.FirstStrategy()
     fistStrategy.fistStrategy()
-
-def SecondsStrategy():
 
 
 FirstStrategy()
